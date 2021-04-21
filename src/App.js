@@ -6,15 +6,17 @@ import AddItem from "./components/AddItem";
 import Item from "./components/Item";
 import Location from "./components/Location"
 import LocationsList from "./components/LocationList";
+import AddLocation from "./components/AddLocation";
 
 function App() {
     return (
         <div >
             <div className="navbar">
             <ul >
-                <li><Link to={"/locations"}>Locations</Link></li>
-                <li><Link to={"/items"}>Items</Link></li>
-                <li><Link to={"/add"}>Add Item</Link></li>
+                <li><Link to={"/locations"}>Emplacements</Link></li>
+                <li><Link to={"/items"}>Objets</Link></li>
+                <li><Link to={"/add/item"}>Ajouter Objet</Link></li>
+                <li><Link to={"/add/location"}>Ajouter Emplacement</Link></li>
                 <li><a href="#about">About</a></li>
             </ul>
             </div>
@@ -22,7 +24,8 @@ function App() {
                 <Switch>
                     <Route exact path={["/", "/locations"]} component={LocationsList}/>
                     <Route exact path={"/items"} component={ItemList}/>
-                    <Route exact path="/add" component={AddItem}/>
+                    <Route exact path="/add/item" component={AddItem}/>
+                    <Route exact path="/add/location" component={AddLocation}/>
                     <Route path="/items/:id" component={Item}/>
                     <Route path="/locations/:id" component={Location}/>
                 </Switch>
