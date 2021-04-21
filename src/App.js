@@ -1,5 +1,5 @@
 import React from "react";
-import {Switch, Route, Link} from "react-router-dom";
+import {Switch, Route, Link, NavLink} from "react-router-dom";
 import './App.css';
 import ItemList from "./components/ItemList";
 import AddItem from "./components/AddItem";
@@ -10,15 +10,15 @@ import AddLocation from "./components/AddLocation";
 
 function App() {
     return (
-        <div >
+        <div>
             <div className="navbar">
-            <ul >
-                <li><Link to={"/locations"}>Emplacements</Link></li>
-                <li><Link to={"/items"}>Objets</Link></li>
-                <li><Link to={"/add/item"}>Ajouter Objet</Link></li>
-                <li><Link to={"/add/location"}>Ajouter Emplacement</Link></li>
-                <li><a href="#about">About</a></li>
-            </ul>
+                <ul>
+                    <li><NavLink exact activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
+                    <li><NavLink exact activeClassName="active" to={"/items"}>Objets</NavLink></li>
+                    <li><NavLink exact activeClassName="active" to={"/add/item"}>Ajouter Objet</NavLink></li>
+                    <li><NavLink exact activeClassName="active" to={"/add/location"}>Ajouter Emplacement</NavLink></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
             </div>
             <div className="container mt-3">
                 <Switch>
