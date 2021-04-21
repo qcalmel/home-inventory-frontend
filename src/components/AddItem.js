@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import ItemDataService from "../services/ItemService";
+import LocationDataService from "../services/LocationService";
 
 const AddItem = () => {
     const initialItemState = {
@@ -7,11 +8,26 @@ const AddItem = () => {
         name: "",
         price: "",
         acquisitionDate: "",
-        isLocation: false
+        isLocation: false,
+        locationId: ""
     };
     const [item, setItem] = useState(initialItemState);
     const [submitted, setSubmitted] = useState(false);
+    const [locations, setLocations] = useState([]);
 
+    useEffect(() => {
+        retrieveLocations();
+    }, []);
+
+    const retrieveLocations = () => {
+        LocationDataService.getAll()
+            .then(response => {
+                setLocations(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
     const handleInputChange = event => {
         const {name, value,} = event.target;
         setItem({...item, [name]: value});
@@ -119,6 +135,21 @@ const AddItem = () => {
                         />
                     </div>
 
+                    <div className="form-group">
+                        <label htmlFor="location">Emplacement</label>
+                        <select
+                            className="form-control"
+                            id="location"
+                            value={item.location}
+                            onChange={handleInputChange}
+                            name="locationId"
+                        >
+                            <option >Aucun</option>
+                            {locations.map(({name,id})=>(
+                                <option key={"location"+id} value={id}>{name}</option>
+                            ))}
+                        </select>
+                    </div>
                     <button onClick={saveItem} className="btn btn-success">
                         Submit
                     </button>
