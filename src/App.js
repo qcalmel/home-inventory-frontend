@@ -13,7 +13,7 @@ function App() {
         <div>
             <div className="navbar">
                 <ul>
-                    <li><NavLink exact activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
+                    <li><NavLink activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/items"}>Objets</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/add/item"}>Ajouter Objet</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/add/location"}>Ajouter Emplacement</NavLink></li>
