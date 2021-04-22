@@ -1,6 +1,10 @@
 import LocationDataService from "../services/LocationService";
 import {Link, useParams} from 'react-router-dom'
 import React, {useEffect, useState} from "react";
+import "../styles/Location.css"
+import useModal from "./useModal";
+import Modal from "./Modal";
+import AddItem from "./AddItem";
 
 const Location = () => {
     const [location, setLocation] = useState({});
@@ -8,7 +12,7 @@ const Location = () => {
     const [items, setItems] = useState([])
     const [history, setHistory] = useState([])
     const {id} = useParams();
-
+    const {isShowing, toggle} = useModal();
     useEffect(() => {
         refreshData()
     }, [id])
@@ -69,11 +73,11 @@ const Location = () => {
             ))
             :
             <Link to={"/locations/"}>
-                <span>Retour</span>
+                <span>Retour{">"}</span>
             </Link>
         }
 
-        <h4>{location.name}</h4>
+        <span>{location.name}</span>
         <ul>
             {children.map((child) => (
                 <Link to={"/locations/" + child.id} key={"child" + child.id}>
@@ -89,7 +93,15 @@ const Location = () => {
                 </Link>
             ))}
         </ul>
+        <div>
+            <button className="modal-toggle" onClick={toggle}>
+                Ajouter Objet
+            </button>
 
+            <Modal isShowing={isShowing} hide={toggle}>
+                <AddItem/>
+            </Modal>
+        </div>
     </div>
 }
 

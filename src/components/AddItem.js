@@ -1,20 +1,21 @@
 import React, {useEffect, useState} from "react";
 import ItemDataService from "../services/ItemService";
 import LocationDataService from "../services/LocationService";
+import {useParams} from "react-router-dom";
 
 const AddItem = () => {
+    const {id} = useParams();
     const initialItemState = {
         id: null,
         name: "",
         price: "",
         acquisitionDate: "",
         isLocation: false,
-        locationId: ""
+        locationId: id || ""
     };
     const [item, setItem] = useState(initialItemState);
     const [submitted, setSubmitted] = useState(false);
     const [locations, setLocations] = useState([]);
-
     useEffect(() => {
         retrieveLocations();
     }, []);
@@ -140,7 +141,7 @@ const AddItem = () => {
                         <select
                             className="form-control"
                             id="location"
-                            value={item.location}
+                            value={item.locationId}
                             onChange={handleInputChange}
                             name="locationId"
                         >
