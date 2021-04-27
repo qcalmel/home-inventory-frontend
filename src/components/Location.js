@@ -5,6 +5,7 @@ import "../styles/Location.css"
 import useModal from "./useModal";
 import Modal from "./Modal";
 import AddItem from "./AddItem";
+import AddLocation from "./AddLocation";
 
 const Location = () => {
     const [location, setLocation] = useState({});
@@ -12,7 +13,9 @@ const Location = () => {
     const [items, setItems] = useState([])
     const [history, setHistory] = useState([])
     const {id} = useParams();
-    const {isShowing, toggle} = useModal();
+
+    const [isShowingAddItem, toggleAddItem] = useModal();
+    const [isShowingAddLocation, toggleAddLocation] = useModal();
     useEffect(() => {
         refreshData()
     }, [id])
@@ -94,12 +97,21 @@ const Location = () => {
             ))}
         </ul>
         <div>
-            <button className="modal-toggle" onClick={toggle}>
+            <button className="modal-toggle" onClick={toggleAddItem}>
                 Ajouter Objet
             </button>
 
-            <Modal isShowing={isShowing} hide={toggle}>
+            <Modal isShowing={isShowingAddItem} hide={toggleAddItem}>
                 <AddItem/>
+            </Modal>
+        </div>
+        <div>
+            <button className="modal-toggle" onClick={toggleAddLocation}>
+                Ajouter Emplacement
+            </button>
+
+            <Modal isShowing={isShowingAddLocation} hide={toggleAddLocation}>
+                <AddLocation/>
             </Modal>
         </div>
     </div>
