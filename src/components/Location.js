@@ -7,24 +7,47 @@ import Modal from "./Modal";
 import AddItem from "./AddItem";
 import AddLocation from "./AddLocation";
 
+
 const Location = () => {
     const [location, setLocation] = useState({});
     const [children, setChildren] = useState([]);
     const [items, setItems] = useState([])
     const [history, setHistory] = useState([])
+    const [itemContainerWidth, setItemContainerWidth] = useState(0)
     const {id} = useParams();
 
     const [isShowingAddItem, toggleAddItem] = useModal();
     const [isShowingAddLocation, toggleAddLocation] = useModal();
+
     useEffect(() => {
         refreshData()
     }, [id])
+
+    useEffect(() => {
+        updateItemColumn()
+        window.addEventListener("resize", updateItemColumn)
+        return () => window.removeEventListener("resize", updateItemColumn)
+    }, [])
+
+    useEffect(() => {
+        updateItemColumn()
+    }, [itemContainerWidth])
+
+    const updateItemColumn = () => {
+        const itemContainer = document.getElementsByClassName("location-content")[0]
+        const newWidth = itemContainer.getBoundingClientRect().width
+        setItemContainerWidth(newWidth)
+        const newColumn = Math.ceil(itemContainerWidth / 180)
+        itemContainer.style.gridTemplateColumns = `repeat(${newColumn},1fr)`
+        console.log(itemContainer.style.gridTemplateColumns)
+    }
 
     const refreshData = () => {
         retrieveLocation()
         retrieveChildren()
         retrieveItems()
     }
+
     const parentsLinks = async (parentId) => {
         let parents = []
         let count = 0
@@ -52,6 +75,7 @@ const Location = () => {
             })
             .catch(e => console.log(e));
     }
+
     const retrieveChildren = () => {
         LocationDataService.getAllChildren(id)
             .then(res => {
@@ -59,6 +83,7 @@ const Location = () => {
             })
             .catch(e => console.log(e));
     }
+
     const retrieveItems = () => {
         LocationDataService.getAllItems(id)
             .then(res => {
@@ -67,7 +92,7 @@ const Location = () => {
             .catch(e => console.log(e));
     }
 
-    return <div>
+    return <div style={{overflowY: "scroll", height: "100vh"}}>
         {history.length ?
             history.reverse().map((parent) => (
                 <Link to={"/locations/" + parent.id} key={"parent" + parent.id}>
@@ -81,31 +106,14 @@ const Location = () => {
         }
 
         <span>{location.name}</span>
-        <ul>
-            {children.map((child) => (
-                <Link to={"/locations/" + child.id} key={"child" + child.id}>
-                    <li>{child.name}</li>
-                </Link>
-            ))}
-        </ul>
-
-        <ul>
-            {items.map((item) => (
-                <Link to={"/items/" + item.id} key={"item" + item.id}>
-                    <li>{item.name}</li>
-                </Link>
-            ))}
-        </ul>
         <div>
             <button className="modal-toggle" onClick={toggleAddItem}>
                 Ajouter Objet
             </button>
 
             <Modal isShowing={isShowingAddItem} hide={toggleAddItem}>
-                <AddItem/>
+                <AddItem onSuccess={() => retrieveItems()}/>
             </Modal>
-        </div>
-        <div>
             <button className="modal-toggle" onClick={toggleAddLocation}>
                 Ajouter Emplacement
             </button>
@@ -113,6 +121,19 @@ const Location = () => {
             <Modal isShowing={isShowingAddLocation} hide={toggleAddLocation}>
                 <AddLocation/>
             </Modal>
+        </div>
+        <div className="location-content">
+            {children.map((child) => (
+                <Link className="location-item" to={"/locations/" + child.id} key={"child" + child.id}>
+                    <div>{child.name}</div>
+                </Link>
+            ))}
+            {items.map((item) => (
+                <Link className="location-item" to={"/items/" + item.id} key={"item" + item.id}>
+                    {/*<li>{item.name}</li>*/}
+                    <div>{item.name}</div>
+                </Link>
+            ))}
         </div>
     </div>
 }

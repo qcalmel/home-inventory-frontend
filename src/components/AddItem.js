@@ -3,7 +3,7 @@ import ItemDataService from "../services/ItemService";
 import LocationDataService from "../services/LocationService";
 import {useParams} from "react-router-dom";
 
-const AddItem = () => {
+const AddItem = ({onSuccess}) => {
     const {id} = useParams();
     const initialItemState = {
         id: null,
@@ -33,7 +33,6 @@ const AddItem = () => {
         const {name, value,} = event.target;
         setItem({...item, [name]: value});
     };
-    console.log(item)
 
     const saveItem = () => {
         let data = {};
@@ -54,6 +53,7 @@ const AddItem = () => {
                 //     acquisitionDate : response.data.acquisitionDate
                 // });
                 setSubmitted(true);
+                onSuccess()
                 console.log(response.data);
             })
             .catch(e => {
