@@ -1,5 +1,5 @@
-import React from "react";
-import {Switch, Route, Link, NavLink} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Switch, Route, Link, NavLink, useLocation} from "react-router-dom";
 import './App.css';
 import ItemList from "./components/ItemList";
 import AddItem from "./components/AddItem";
@@ -9,10 +9,18 @@ import LocationsList from "./components/LocationList";
 import AddLocation from "./components/AddLocation";
 
 function App() {
+    const [navToggle, setNavToggle] = useState(false)
+    const location = useLocation()
+    useEffect(() => {
+        setNavToggle(false)
+    }, [location])
     return (
         <div>
-            <div className="navbar">
-                <ul>
+            <div className="menu">
+                <input type="checkbox" checked={navToggle} onClick={(e) => setNavToggle(!navToggle)}
+                       className="nav-toggle"/>
+                <div className="overlay"></div>
+                <ul className="nav">
                     <li><NavLink activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/items"}>Objets</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/add/item"}>Ajouter Objet</NavLink></li>
@@ -20,7 +28,7 @@ function App() {
                     <li><a href="#about">About</a></li>
                 </ul>
             </div>
-            <div className="container mt-3">
+            <div>
                 <Switch>
                     <Route exact path={["/", "/locations"]} component={LocationsList}/>
                     <Route exact path={"/items"} component={ItemList}/>
