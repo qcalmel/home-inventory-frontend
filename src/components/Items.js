@@ -2,7 +2,8 @@ import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
 import "../styles/Items.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import boxOpen from "../assets/icons/box-open-solid.svg"
+import boxOpenSvg from "../assets/icons/box-open-solid.svg"
+import fileSvg from "../assets/icons/file-solid.svg"
 import ItemActionMenu from "./ItemActionMenu";
 
 const Items = ({locations, items}) => {
@@ -52,28 +53,48 @@ const Items = ({locations, items}) => {
                         <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
                     </div>
                     <div className="item-action-button-container">
-                        {/*<button className="item-action-button">...</button>*/}
                         <div className="item-action-button">
                             <ItemActionMenu itemId={location.id}/>
                         </div>
                     </div>
                     <Link to={"/locations/" + location.id}>
-                        <div className="item-select">
-                            <div className="item-icon">
-                                <img alt="box-open" src={boxOpen}/>
-                            </div>
-
-                            <div className="item-title">{location.name}</div>
+                    <div className="item-select">
+                        <div className="item-icon">
+                            <img alt="box-open" src={boxOpenSvg}/>
                         </div>
+
+                        <div className="item-title">{location.name}</div>
+                    </div>
                     </Link>
                 </div>
 
             ))}
             {items.map((item) => (
-                <Link className="location-item" to={"/items/" + item.id} key={"item" + item.id}>
-                    {/*<li>{item.name}</li>*/}
-                    <div>{item.name}</div>
-                </Link>
+                // <Link className="location-item" to={"/items/" + item.id} key={"item" + item.id}>
+                //     {/*<li>{item.name}</li>*/}
+                //     <div>{item.name}</div>
+                // </Link>
+                <div locationid={item.id} className="location-item" key={"item" + item.id}>
+                    <div className="item-select-checkbox-container">
+                        <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
+                    </div>
+                    <div className="item-action-button-container">
+                        <div className="item-action-button">
+                            <ItemActionMenu itemId={item.id}/>
+                        </div>
+                    </div>
+                    <Link to={"/items/" + item.id}>
+                        <div className="item-select">
+                            <div className="item-icon">
+                                <img alt="item-icon" src={fileSvg}/>
+                            </div>
+
+                            <div className="item-title">{item.name}</div>
+
+                        </div>
+                    </Link>
+
+                </div>
             ))}
         </div>
     )
