@@ -1,3 +1,6 @@
+.menu{
+    padding-bottom: 20px;
+}
 .nav {
     list-style-type: none;
     margin: 0;
@@ -6,6 +9,7 @@
     background-color: #333;
     width: 250px;
     position: absolute;
+    top: 0;
     transform-origin: 0% 0%;
     transform: translate(-100%, 0);
     transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
@@ -25,6 +29,23 @@
 .active {
     background-color: #4CAF50;
 }
+.menu input{
+    position: fixed;
+    display: none;
+    top:0;
+}
+
+.menu input + label{
+    color: #333;
+    padding: 5px;
+    font-size: 30px;
+}
+.menu input + label:hover{
+    color: #4CAF50;
+}
+.menu input:checked + label {
+    color: #4CAF50;
+}
 .menu input:checked ~ul{
     transform: none;
 }
@@ -38,9 +59,7 @@
     background: rgba(0, 0, 0, 0.5);
 }
 .menu input:checked {
-    position: fixed;
-    top: 0;
-    left: 0;
+    display: block;
     width: 100vw;
     height: 100vh;
     z-index: 10;
@@ -56,6 +75,9 @@
         position: relative;
         transform: none;
         transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+    }
+    .menu input + label{
+        display: none;
     }
     .nav-toggle {
         display: none;

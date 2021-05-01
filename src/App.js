@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Switch, Route, Link, NavLink, useLocation} from "react-router-dom";
+import {Switch, Route, NavLink, useLocation} from "react-router-dom";
 import './App.css';
 import ItemList from "./components/ItemList";
 import AddItem from "./components/AddItem";
@@ -7,6 +7,11 @@ import Item from "./components/Item";
 import Location from "./components/Location"
 import LocationsList from "./components/LocationList";
 import AddLocation from "./components/AddLocation";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {fas} from "@fortawesome/free-solid-svg-icons";
+import {library} from "@fortawesome/fontawesome-svg-core";
+
+library.add(fas)
 
 function App() {
     const [navToggle, setNavToggle] = useState(false)
@@ -17,8 +22,16 @@ function App() {
     return (
         <div>
             <div className="menu">
-                <input type="checkbox" checked={navToggle} onClick={(e) => setNavToggle(!navToggle)}
-                       className="nav-toggle"/>
+                <input type="checkbox"
+                       id="toggle-menu"
+                       name="toggle-menu"
+                       checked={navToggle}
+                       onClick={(e) => setNavToggle(!navToggle)}
+                       className="nav-toggle"
+                />
+                <label htmlFor="toggle-menu">
+                    <FontAwesomeIcon icon={['fas','bars']}/>
+                </label>
                 <div className="overlay"></div>
                 <ul className="nav">
                     <li><NavLink activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
