@@ -1,13 +1,17 @@
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {useEffect, useState} from "react";
 import "../styles/Items.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import boxOpenSvg from "../assets/icons/box-open-solid.svg"
-import fileSvg from "../assets/icons/file-solid.svg"
 import ItemActionMenu from "./ItemActionMenu";
 
-const Items = ({locations, items, activeItem}) => {
+const Items = ({items, activeItem}) => {
     const [itemContainerWidth, setItemContainerWidth] = useState(0)
+    const [selectedItem, setSelectedItems] = useState([])
+    let history = useHistory()
+
+    const redirect = (item) => {
+        history.push((item.isLocation ? "/locations/" : "/items/") + item.id)
+    }
 
     useEffect(() => {
         updateItemColumn()
@@ -26,55 +30,57 @@ const Items = ({locations, items, activeItem}) => {
         const newColumn = Math.ceil(itemContainerWidth / 180)
         itemContainer.style.gridTemplateColumns = `repeat(${newColumn},1fr)`
     }
-    let selectedItem = []
+    const deselect = (event) => {
+        const items = [...event.currentTarget.getElementsByClassName('location-item')]
+        items.forEach((item) => {
+            item.getElementsByClassName('item-select-checkbox')[0].checked = false
+            item.getElementsByClassName('item-select')[0].classList.remove('selected')
+
+        })
+        setSelectedItems([])
+        activeItem(event, null)
+    }
     const handleSelect = (event) => {
-        const itemContainerSelector = event.target.parentNode.parentNode
+        let itemContainerSelector = ""
+        if(event.currentTarget.classList[0] === "item-select"){
+            itemContainerSelector = event.currentTarget.parentNode
+        }else{
+            itemContainerSelector = event.currentTarget.parentNode.parentNode
+        }
+        const checkbox = itemContainerSelector.querySelector('.item-select-checkbox')
+
+        console.log(itemContainerSelector)
         const locationId = itemContainerSelector.getAttribute("locationid")
-        if (event.target.checked) {
-            selectedItem = [...selectedItem, locationId]
+        if (checkbox.checked) {
+            setSelectedItems([...selectedItem, locationId])
             itemContainerSelector.querySelector('.item-select').classList.add("selected")
             console.log(itemContainerSelector.querySelector('.item-select'))
         } else {
             const index = selectedItem.indexOf(locationId)
             if (index >= 0) {
-                selectedItem.splice(index, 1)
+                const updatedSelectedItems = [...selectedItem]
+                updatedSelectedItems.splice(index, 1)
+                setSelectedItems(updatedSelectedItems)
             }
             itemContainerSelector.querySelector('.item-select').classList.remove("selected")
         }
-        console.log(selectedItem)
+
     }
-
+    console.log(selectedItem)
     return (
-        <div className="location-items-container">
-            {locations.map((location) => (
-
-                <div onClick={()=>{activeItem(location)}} locationid={location.id} className="location-item" key={"child" + location.id}>
-                    <div className="item-select-checkbox-container">
-                        <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
-                    </div>
-                    <div className="item-action-button-container">
-                        <div className="item-action-button">
-                            <ItemActionMenu itemId={location.id}/>
-                        </div>
-                    </div>
-                    {/*<Link to={"/locations/" + location.id}>*/}
-                    <div className="item-select">
-                        <div className="item-icon">
-                            <img alt="box-open" src={boxOpenSvg}/>
-                        </div>
-
-                        <div className="item-title">{location.name}</div>
-                    </div>
-                    {/*</Link>*/}
-                </div>
-
-            ))}
+        <div className="location-items-container" onClick={(e) => deselect(e)}>
             {items.map((item) => (
-                // <Link className="location-item" to={"/items/" + item.id} key={"item" + item.id}>
-                //     {/*<li>{item.name}</li>*/}
-                //     <div>{item.name}</div>
-                // </Link>
-                <div onClick={()=>{activeItem(item)}} locationid={item.id} className="location-item" key={"item" + item.id}>
+                <div onClick={(event) => {
+                    event.stopPropagation()
+                    // activeItem(event, item)
+                }}
+                     onDoubleClick={() => {
+                         redirect(item)
+                     }}
+                     locationid={item.id}
+                     className="location-item"
+                     key={"item" + item.id}
+                >
                     <div className="item-select-checkbox-container">
                         <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
                     </div>
@@ -83,17 +89,18 @@ const Items = ({locations, items, activeItem}) => {
                             <ItemActionMenu itemId={item.id}/>
                         </div>
                     </div>
-                    {/*<Link to={"/items/" + item.id}>*/}
-                        <div className="item-select">
-                            <div className="item-icon">
-                                <img alt="item-icon" src={fileSvg}/>
-                            </div>
-
-                            <div className="item-title">{item.name}</div>
-
+                    <div className="item-select" onClick={(event)=>{
+                         activeItem(event, item)
+                        handleSelect(event)
+                    }}>
+                        <div className="item-icon">
+                            {/*<img alt="item-icon" src={item.isLocation ? boxOpenSvg :fileSvg}/>*/}
+                            <FontAwesomeIcon className="icon" icon={item.isLocation ? "box-open" : "file"}/>
                         </div>
-                    {/*</Link>*/}
 
+                        <div className="item-title">{item.name}</div>
+
+                    </div>
                 </div>
             ))}
         </div>

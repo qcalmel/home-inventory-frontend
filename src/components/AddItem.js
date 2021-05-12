@@ -41,9 +41,9 @@ const AddItem = ({onSuccess}) => {
                 data[propName] = item[propName];
             }
         }
-        if(item.isLocation){
-            data["location"] = {name:item.name}
-        }
+        // if(item.isLocation){
+        //     data["location"] = {name:item.name}
+        // }
         ItemDataService.create(data)
             .then(response => {
                 // setItem({

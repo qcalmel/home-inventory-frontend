@@ -17,8 +17,9 @@ const Location = () => {
     const [items, setItems] = useState([])
     const [history, setHistory] = useState([])
     const [currentItem, setCurrentItem] = useState(null);
-    console.log(currentItem)
+    // console.log(currentItem)
     const {id} = useParams();
+
 
     const [isShowingAddItem, toggleAddItem] = useModal();
     const [isShowingAddLocation, toggleAddLocation] = useModal();
@@ -32,10 +33,13 @@ const Location = () => {
         retrieveChildren()
         retrieveItems()
     }
-    const setActiveItem = (item) => {
+    const setActiveItem = (event,item) => {
         setCurrentItem(item);
-    };
+        const checked = event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked
+        event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked = !checked
 
+
+    };
     const parentsLinks = async (parentId) => {
         let parents = []
         let count = 0
@@ -85,12 +89,12 @@ const Location = () => {
         {history.length ?
             history.map((parent) => (
                 <Link to={"/locations/" + parent.id} key={"parent" + parent.id}>
-                    <span>{parent.name}{">"}</span>
+                    <span> {">"}{parent.name}</span>
                 </Link>
             ))
             :
             <Link to={"/locations/"}>
-                <span>Retour{">"}</span>
+                <span>Home Inventory</span>
             </Link>
         }
 
