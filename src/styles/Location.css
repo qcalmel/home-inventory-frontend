@@ -1,0 +1,14 @@
+.content {
+    overflow-y: auto;
+    height: calc(80vh + 80px)
+}
+.sidebar{
+    padding: 10px;
+}
+
+@media (min-width: 600px) {
+    .grid-container {
+        display: grid;
+        grid-template-columns: auto 300px;
+    }
+}

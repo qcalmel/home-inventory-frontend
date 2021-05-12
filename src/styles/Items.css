@@ -5,6 +5,7 @@
     grid-gap: 20px;
     align-items: stretch;
     padding: 10px;
+    overflow-y: auto;
 }
 .location-item{
     min-width: 110px;
@@ -93,6 +94,9 @@
 .selected{
     background-color: #b5e3b5;
     border-radius: 5px;
+}
+.current{
+    border: darkgreen solid 2px;
 }
 .selected:hover{
     background-color: #4CAF50;

@@ -6,6 +6,9 @@ import Modal from "./Modal";
 import AddItem from "./AddItem";
 import AddLocation from "./AddLocation";
 import Items from "./Items";
+import Item from "./Item";
+
+import "../styles/Location.css"
 
 
 const Location = () => {
@@ -13,8 +16,10 @@ const Location = () => {
     const [children, setChildren] = useState([]);
     const [items, setItems] = useState([])
     const [history, setHistory] = useState([])
+    const [currentItem, setCurrentItem] = useState(null);
+    console.log(currentItem)
     const {id} = useParams();
-    console.log(history)
+
     const [isShowingAddItem, toggleAddItem] = useModal();
     const [isShowingAddLocation, toggleAddLocation] = useModal();
 
@@ -27,6 +32,9 @@ const Location = () => {
         retrieveChildren()
         retrieveItems()
     }
+    const setActiveItem = (item) => {
+        setCurrentItem(item);
+    };
 
     const parentsLinks = async (parentId) => {
         let parents = []
@@ -34,7 +42,7 @@ const Location = () => {
         while (parentId > 0) {
             await LocationDataService.get(parentId)
                 .then(res => {
-                    parents = [ {id: res.data.id, name: res.data.name},...parents];
+                    parents = [{id: res.data.id, name: res.data.name}, ...parents];
                     parentId = res.data.parentId
                 })
                 .catch(e => console.log(e))
@@ -72,7 +80,8 @@ const Location = () => {
             .catch(e => console.log(e));
     }
 
-    return <div style={{overflowY: "scroll", height: "100vh"}}>
+    return <div >
+        {/*<div style={{overflowY: "scroll", height: "100vh"}}>*/}
         {history.length ?
             history.map((parent) => (
                 <Link to={"/locations/" + parent.id} key={"parent" + parent.id}>
@@ -102,20 +111,14 @@ const Location = () => {
                 <AddLocation/>
             </Modal>
         </div>
-        <Items locations={children} items={items}/>
-        {/*<div className="location-content">*/}
-        {/*    {children.map((child) => (*/}
-        {/*        <Link className="location-item" to={"/locations/" + child.id} key={"child" + child.id}>*/}
-        {/*            <div>{child.name}</div>*/}
-        {/*        </Link>*/}
-        {/*    ))}*/}
-        {/*    {items.map((item) => (*/}
-        {/*        <Link className="location-item" to={"/items/" + item.id} key={"item" + item.id}>*/}
-        {/*            /!*<li>{item.name}</li>*!/*/}
-        {/*            <div>{item.name}</div>*/}
-        {/*        </Link>*/}
-        {/*    ))}*/}
-        {/*</div>*/}
+        <div className="grid-container">
+            <div className="content">
+                <Items locations={children} items={items} activeItem={setActiveItem}/>
+            </div>
+            <div className="sidebar">
+                <Item currentItem={currentItem}/>
+            </div>
+        </div>
     </div>
 }
 

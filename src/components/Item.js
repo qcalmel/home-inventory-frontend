@@ -1,9 +1,14 @@
-const Item = () => {
-
+const Item = ({currentItem}) => {
+    console.log(currentItem)
 
 
     return <div>
-        Item
+        {currentItem &&
+        <div>
+            <label>Nom : </label>
+            <span>{currentItem.name}</span>
+        </div>
+        }
     </div>
 }
 

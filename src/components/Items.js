@@ -6,7 +6,7 @@ import boxOpenSvg from "../assets/icons/box-open-solid.svg"
 import fileSvg from "../assets/icons/file-solid.svg"
 import ItemActionMenu from "./ItemActionMenu";
 
-const Items = ({locations, items}) => {
+const Items = ({locations, items, activeItem}) => {
     const [itemContainerWidth, setItemContainerWidth] = useState(0)
 
     useEffect(() => {
@@ -48,7 +48,7 @@ const Items = ({locations, items}) => {
         <div className="location-items-container">
             {locations.map((location) => (
 
-                <div locationid={location.id} className="location-item" key={"child" + location.id}>
+                <div onClick={()=>{activeItem(location)}} locationid={location.id} className="location-item" key={"child" + location.id}>
                     <div className="item-select-checkbox-container">
                         <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
                     </div>
@@ -57,7 +57,7 @@ const Items = ({locations, items}) => {
                             <ItemActionMenu itemId={location.id}/>
                         </div>
                     </div>
-                    <Link to={"/locations/" + location.id}>
+                    {/*<Link to={"/locations/" + location.id}>*/}
                     <div className="item-select">
                         <div className="item-icon">
                             <img alt="box-open" src={boxOpenSvg}/>
@@ -65,7 +65,7 @@ const Items = ({locations, items}) => {
 
                         <div className="item-title">{location.name}</div>
                     </div>
-                    </Link>
+                    {/*</Link>*/}
                 </div>
 
             ))}
@@ -74,7 +74,7 @@ const Items = ({locations, items}) => {
                 //     {/*<li>{item.name}</li>*/}
                 //     <div>{item.name}</div>
                 // </Link>
-                <div locationid={item.id} className="location-item" key={"item" + item.id}>
+                <div onClick={()=>{activeItem(item)}} locationid={item.id} className="location-item" key={"item" + item.id}>
                     <div className="item-select-checkbox-container">
                         <input onChange={(e) => handleSelect(e)} className="item-select-checkbox" type="checkbox"/>
                     </div>
@@ -83,7 +83,7 @@ const Items = ({locations, items}) => {
                             <ItemActionMenu itemId={item.id}/>
                         </div>
                     </div>
-                    <Link to={"/items/" + item.id}>
+                    {/*<Link to={"/items/" + item.id}>*/}
                         <div className="item-select">
                             <div className="item-icon">
                                 <img alt="item-icon" src={fileSvg}/>
@@ -92,7 +92,7 @@ const Items = ({locations, items}) => {
                             <div className="item-title">{item.name}</div>
 
                         </div>
-                    </Link>
+                    {/*</Link>*/}
 
                 </div>
             ))}
