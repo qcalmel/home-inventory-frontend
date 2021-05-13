@@ -48,8 +48,6 @@ const Items = ({items, activeItem}) => {
             itemContainerSelector = event.currentTarget.parentNode.parentNode
         }
         const checkbox = itemContainerSelector.querySelector('.item-select-checkbox')
-
-        console.log(itemContainerSelector)
         const locationId = itemContainerSelector.getAttribute("locationid")
         if (checkbox.checked) {
             setSelectedItems([...selectedItem, locationId])
@@ -66,7 +64,6 @@ const Items = ({items, activeItem}) => {
         }
 
     }
-    console.log(selectedItem)
     return (
         <div className="location-items-container" onClick={(e) => deselect(e)}>
             {items.map((item) => (
