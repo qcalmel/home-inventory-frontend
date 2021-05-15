@@ -4,7 +4,7 @@ import "../styles/Items.css"
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import ItemActionMenu from "./ItemActionMenu";
 
-const Items = ({items, activeItem}) => {
+const Items = ({items, activeItem, location}) => {
     const [itemContainerWidth, setItemContainerWidth] = useState(0)
     const [selectedItem, setSelectedItems] = useState([])
     let history = useHistory()
@@ -30,7 +30,8 @@ const Items = ({items, activeItem}) => {
         const newColumn = Math.ceil(itemContainerWidth / 180)
         itemContainer.style.gridTemplateColumns = `repeat(${newColumn},1fr)`
     }
-    const deselect = (event) => {
+    const handleDeselect = (event) => {
+        console.log("handleDeselect()")
         const items = [...event.currentTarget.getElementsByClassName('location-item')]
         items.forEach((item) => {
             item.getElementsByClassName('item-select-checkbox')[0].checked = false
@@ -38,9 +39,10 @@ const Items = ({items, activeItem}) => {
 
         })
         setSelectedItems([])
-        activeItem(event, null)
+        activeItem(event, location)
     }
     const handleSelect = (event) => {
+        console.log("handleSelect()")
         let itemContainerSelector = ""
         if(event.currentTarget.classList[0] === "item-select"){
             itemContainerSelector = event.currentTarget.parentNode
@@ -65,7 +67,7 @@ const Items = ({items, activeItem}) => {
 
     }
     return (
-        <div className="location-items-container" onClick={(e) => deselect(e)}>
+        <div className="location-items-container" onClick={(e) => handleDeselect(e)}>
             {items.map((item) => (
                 <div onClick={(event) => {
                     event.stopPropagation()

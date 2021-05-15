@@ -13,38 +13,40 @@ import PathNavigation from "./PathNavigation";
 
 
 const Location = () => {
-    const [location, setLocation] = useState({});
-    const [children, setChildren] = useState([]);
+    const defaultLocation = {name:"Home"}
+    const [location, setLocation] = useState(defaultLocation);
     const [items, setItems] = useState([])
     const [path, setPath] = useState([])
     const [currentItem, setCurrentItem] = useState(null);
-    // console.log(currentItem)
     const {id} = useParams();
 
-
+    console.log(currentItem)
     const [isShowingAddItem, toggleAddItem] = useModal();
     const [isShowingAddLocation, toggleAddLocation] = useModal();
 
     useEffect(() => {
         refreshData()
+        console.log(currentItem)
     }, [id])
-
+    console.log(location)
     const refreshData = () => {
         retrieveLocation()
-        // retrieveChildren()
         retrieveItems()
     }
     const setActiveItem = (event, item) => {
         setCurrentItem(item);
-        const checked = event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked
-        event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked = !checked
+        if (item.id && item.id != id) {
+            console.log(item.id)
+            console.log(id)
+            const checked = event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked
+            event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked = !checked
+        }
 
 
     };
     const parentsLinks = async (parentId) => {
         let parents = []
         let count = 0
-        console.log(parentId)
         while (parentId > 0) {
             await ItemDataService.get(parentId)
                 .then(res => {
@@ -59,48 +61,40 @@ const Location = () => {
     }
 
     const retrieveLocation = () => {
-        ItemDataService.get(id)
-            .then(res => {
-                console.log(res.data)
-                setLocation(res.data)
-                setPath([])
-                parentsLinks(res.data.locationId)
-                    .then(res => setPath(res))
-                    .catch(e => console.log(e))
-            })
-            .catch(e => console.log(e));
+        id ?
+            ItemDataService.get(id)
+                .then(res => {
+                    setLocation(res.data)
+                    setCurrentItem(res.data)
+                    setPath([])
+                    parentsLinks(res.data.locationId)
+                        .then(res => setPath(res))
+                        .catch(e => console.log(e))
+                })
+                .catch(e => console.log(e))
+            :
+            setLocation(defaultLocation)
+        setCurrentItem(defaultLocation)
+        setPath([])
+        ;
     }
-
-    // const retrieveChildren = () => {
-    //     LocationDataService.getAllChildren(id)
-    //         .then(res => {
-    //             setChildren(res.data)
-    //         })
-    //         .catch(e => console.log(e));
-    // }
 
     const retrieveItems = () => {
-        LocationDataService.getAllItems(id)
-            .then(res => {
-                setItems(res.data)
-            })
-            .catch(e => console.log(e));
+        id ?
+            LocationDataService.getAllItems(id)
+                .then(res => {
+                    setItems(res.data)
+                })
+                .catch(e => console.log(e))
+            :
+            LocationDataService.getRootLocations()
+                .then(res => {
+                    setItems(res.data)
+                })
+                .catch(e => console.log(e))
+        ;
     }
-    console.log(path)
     return <div>
-        {/*< Link to="/locations/">*/}
-        {/*    <span>Home</span>*/}
-        {/*</Link>*/}
-        {/*/!*<div style={{overflowY: "scroll", height: "100vh"}}>*!/*/}
-        {/*{*/}
-        {/*    path.map((location) => (*/}
-        {/*        <Link to={"/locations/" + location.id} key={"parent" + location.id}>*/}
-        {/*            <span> {">"}{location.name}</span>*/}
-        {/*        </Link>*/}
-        {/*    ))*/}
-        {/*}*/}
-        
-        {/*<span>{">"}{location.name}</span>*/}
         <PathNavigation currentLocation={location} parentLocations={path}/>
         <div>
             <button className="modal-toggle" onClick={toggleAddItem}>
@@ -120,7 +114,7 @@ const Location = () => {
         </div>
         <div className="grid-container">
             <div className="content">
-                <Items locations={children} items={items} activeItem={setActiveItem}/>
+                <Items items={items} activeItem={setActiveItem} location={location}/>
             </div>
             <div className="sidebar">
                 <Item currentItem={currentItem}/>

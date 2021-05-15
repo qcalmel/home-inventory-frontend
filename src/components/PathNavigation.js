@@ -4,8 +4,8 @@ import ("../styles/PathNavigation.css")
 const PathNavigation = ({parentLocations, currentLocation}) => {
     return(
         <div className="path-navigation">
-        < Link to="/locations/">
-            <span>Home</span>
+        <Link to="/home/">
+            <span>Accueil</span>
         </Link>
     {
         parentLocations.map((location) => (
@@ -14,9 +14,12 @@ const PathNavigation = ({parentLocations, currentLocation}) => {
             </Link>
         ))
     }
-            <span>{">"}{currentLocation.name}</span>
+            {currentLocation.id &&
+                <span>{">"}{currentLocation.name}</span>
+            }
         </div>
     )
+
 }
 
 export default PathNavigation

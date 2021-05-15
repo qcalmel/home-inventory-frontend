@@ -1,0 +1,34 @@
+.SelectionItem{
+    background: lightgrey;
+}
+.SelectionItem_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.SelectionItem_image {
+    position: relative;
+    height: 160px;
+    width: 160px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.SelectionItem_image .icon {
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    height: 100%;
+    width: 100%;
+
+    max-height: calc(100% - 40px);
+    max-width: calc(100% - 20px);
+}
+/*.SelectionItem_image svg {*/
+/*    position: absolute;*/
+/*    height: 100%;*/
+/*    width: 100%;*/
+/*    display: block;*/
+/*}*/
+.SelectionItem_details {
+
+}

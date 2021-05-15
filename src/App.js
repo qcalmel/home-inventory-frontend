@@ -34,7 +34,7 @@ function App() {
                 </label>
                 <div className="overlay"></div>
                 <ul className="nav">
-                    <li><NavLink activeClassName="active" to={"/locations"}>Emplacements</NavLink></li>
+                    <li><NavLink activeClassName="active" to={"/home"}>Emplacements</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/items"}>Objets</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/add/item"}>Ajouter Objet</NavLink></li>
                     <li><NavLink exact activeClassName="active" to={"/add/location"}>Ajouter Emplacement</NavLink></li>
@@ -43,7 +43,8 @@ function App() {
             </div>
             <div>
                 <Switch>
-                    <Route exact path={["/", "/locations"]} component={LocationsList}/>
+                    <Route exact path={"/locations"} component={LocationsList}/>
+                    <Route exact path={["/", "/home"]} component={Location}/>
                     <Route exact path={"/items"} component={ItemList}/>
                     <Route exact path="/add/item" component={AddItem}/>
                     <Route exact path="/add/location" component={AddLocation}/>

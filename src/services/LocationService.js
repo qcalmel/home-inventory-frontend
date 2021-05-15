@@ -16,6 +16,10 @@ const getAllItems = id => {
     return http.get(`/locations/${id}/items`);
 };
 
+const getRootLocations = () => {
+    return http.get("locations/root")
+}
+
 const create = data => {
     return http.post("/locations", data);
 };
@@ -41,4 +45,5 @@ export default {
     update,
     remove,
     removeAll,
+    getRootLocations
 };
