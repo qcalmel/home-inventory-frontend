@@ -9,7 +9,7 @@ const get = id => {
 };
 
 const getAllChildren = id => {
-    return http.get(`/locations/${id}/children`);
+    return http.get(`/locations/${id}/locations`);
 };
 
 const getAllItems = id => {
