@@ -6,10 +6,10 @@ import ItemActionMenu from "./ItemActionMenu";
 
 const Items = ({items, activeItem, location}) => {
     const [itemContainerWidth, setItemContainerWidth] = useState(0)
-    const [selectedItem, setSelectedItems] = useState([])
+    const [selectedItems, setSelectedItems] = useState([])
     let history = useHistory()
-
     const redirect = (item) => {
+        deselectItems()
         history.push((item.isLocation ? "/locations/" : "/items/") + item.id)
     }
 
@@ -18,6 +18,9 @@ const Items = ({items, activeItem, location}) => {
         window.addEventListener("resize", updateItemColumn)
         return () => window.removeEventListener("resize", updateItemColumn)
     }, [])
+    useEffect(()=>{
+        deselectItems()
+    },[location])
 
     useEffect(() => {
         updateItemColumn()
@@ -30,35 +33,40 @@ const Items = ({items, activeItem, location}) => {
         const newColumn = Math.ceil(itemContainerWidth / 180)
         itemContainer.style.gridTemplateColumns = `repeat(${newColumn},1fr)`
     }
-    const handleDeselect = (event) => {
-        console.log("handleDeselect()")
-        const items = [...event.currentTarget.getElementsByClassName('location-item')]
+    const deselectItems = () => {
+        let items = []
+        selectedItems.forEach((id) => {
+            items.push(document.querySelector(`.location-item[locationid="${id}"]`))
+        })
         items.forEach((item) => {
             item.getElementsByClassName('item-select-checkbox')[0].checked = false
             item.getElementsByClassName('item-select')[0].classList.remove('selected')
 
         })
         setSelectedItems([])
+    }
+    const handleDeselect = (event) => {
+        deselectItems()
         activeItem(event, location)
     }
-    const handleSelect = (event) => {
-        console.log("handleSelect()")
+    const handleSelect = (event,item) => {
         let itemContainerSelector = ""
-        if(event.currentTarget.classList[0] === "item-select"){
+        if (event.currentTarget.classList[0] === "item-select") {
+            deselectItems()
+            activeItem(event, item)
             itemContainerSelector = event.currentTarget.parentNode
-        }else{
+        } else {
             itemContainerSelector = event.currentTarget.parentNode.parentNode
         }
         const checkbox = itemContainerSelector.querySelector('.item-select-checkbox')
         const locationId = itemContainerSelector.getAttribute("locationid")
         if (checkbox.checked) {
-            setSelectedItems([...selectedItem, locationId])
+            setSelectedItems((selectedItems) => ([...selectedItems, locationId]))
             itemContainerSelector.querySelector('.item-select').classList.add("selected")
-            console.log(itemContainerSelector.querySelector('.item-select'))
-        } else {
-            const index = selectedItem.indexOf(locationId)
+        } else if (event.currentTarget.classList[0] !== "item-select") {
+            const index = selectedItems.indexOf(locationId)
             if (index >= 0) {
-                const updatedSelectedItems = [...selectedItem]
+                const updatedSelectedItems = [...selectedItems]
                 updatedSelectedItems.splice(index, 1)
                 setSelectedItems(updatedSelectedItems)
             }
@@ -73,9 +81,7 @@ const Items = ({items, activeItem, location}) => {
                     event.stopPropagation()
                     // activeItem(event, item)
                 }}
-                     onDoubleClick={() => {
-                         redirect(item)
-                     }}
+
                      locationid={item.id}
                      className="location-item"
                      key={"item" + item.id}
@@ -88,10 +94,15 @@ const Items = ({items, activeItem, location}) => {
                             <ItemActionMenu itemId={item.id}/>
                         </div>
                     </div>
-                    <div className="item-select" onClick={(event)=>{
-                         activeItem(event, item)
-                        handleSelect(event)
-                    }}>
+                    <div className="item-select" onClick={(event) => {
+
+                        handleSelect(event,item)
+
+                    }}
+                         onDoubleClick={() => {
+                             redirect(item)
+                         }}
+                        >
                         <div className="item-icon">
                             {/*<img alt="item-icon" src={item.isLocation ? boxOpenSvg :fileSvg}/>*/}
                             <FontAwesomeIcon className="icon" icon={item.isLocation ? "box-open" : "file"}/>

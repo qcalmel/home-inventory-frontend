@@ -20,15 +20,12 @@ const Location = () => {
     const [currentItem, setCurrentItem] = useState(null);
     const {id} = useParams();
 
-    console.log(currentItem)
     const [isShowingAddItem, toggleAddItem] = useModal();
     const [isShowingAddLocation, toggleAddLocation] = useModal();
 
     useEffect(() => {
         refreshData()
-        console.log(currentItem)
     }, [id])
-    console.log(location)
     const refreshData = () => {
         retrieveLocation()
         retrieveItems()
@@ -36,8 +33,6 @@ const Location = () => {
     const setActiveItem = (event, item) => {
         setCurrentItem(item);
         if (item.id && item.id != id) {
-            console.log(item.id)
-            console.log(id)
             const checked = event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked
             event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked = !checked
         }
