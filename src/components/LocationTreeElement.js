@@ -3,13 +3,12 @@ import LocationDataService from "../services/LocationService"
 import ItemDataService from "../services/ItemService";
 import {useEffect, useState} from "react";
 
-const LocationTreeElement = ({id}) => {
+const LocationTreeElement = ({id, onSelect,selectedLocation}) => {
     const [isShowingChildren, setIsShowingChildren] = useState(false)
     const [children, setChildren] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [location, setLocation] = useState({})
     const toggleChildren = () => {
-        console.log('test')
         setIsShowingChildren(!isShowingChildren)
     }
     useEffect(() => {
@@ -41,22 +40,21 @@ const LocationTreeElement = ({id}) => {
         isShowingChildren && getChildren(id)
     }, [isShowingChildren])
 
-
     return (
         <ul key={location.id} className="list-location">
-            <li>
+            <li className={selectedLocation === location.id ? " active" : ""}>
                 <span onClick={toggleChildren}>
                     <FontAwesomeIcon
                         size={"xs"}
                         icon={isLoading ? "spinner" : isShowingChildren ? "chevron-down" : "chevron-right"}
                         spin={isLoading}
-                    /></span> {location.name}
+                    /></span> <span onClick={()=>onSelect(location.id)}>{location.name}</span>
 
             </li>
             {
                 isShowingChildren &&
                 children.map((location) => (
-                    <LocationTreeElement id={location.id}/>
+                    <LocationTreeElement id={location.id} selectedLocation={selectedLocation} onSelect={onSelect}/>
                 ))
 
             }
