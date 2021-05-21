@@ -21,7 +21,6 @@ const Location = () => {
     const {id} = useParams();
 
     const [isShowingAddItem, toggleAddItem] = useModal();
-    const [isShowingAddLocation, toggleAddLocation] = useModal();
 
     useEffect(() => {
         refreshData()
@@ -96,16 +95,10 @@ const Location = () => {
                 Ajouter Objet
             </button>
 
-            <Modal isShowing={isShowingAddItem} hide={toggleAddItem}>
+            <Modal isShowing={isShowingAddItem} hide={toggleAddItem} title="Ajouter un nouvel objet">
                 <AddItem onSuccess={() => retrieveItems()}/>
             </Modal>
-            <button className="modal-toggle" onClick={toggleAddLocation}>
-                Ajouter Emplacement
-            </button>
 
-            <Modal isShowing={isShowingAddLocation} hide={toggleAddLocation}>
-                <AddLocation/>
-            </Modal>
         </div>
         <div className="grid-container">
             <div className="content">
