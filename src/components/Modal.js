@@ -8,7 +8,7 @@ const Modal = ({isShowing, hide, ...props}) => (
                 <div className="modal-wrapper">
                     <div onClick={e=>{e.stopPropagation()}} className="modal">
                         <div className="modal-header">
-                            <h4>Modal Header</h4>
+                            <h4>{props.title || "Modal Header"}</h4>
                             <button
                                 type="button"
                                 className="modal-close-button"
