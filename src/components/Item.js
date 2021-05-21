@@ -2,6 +2,7 @@ import {useParams} from "react-router-dom";
 import ItemDataService from "../services/ItemService";
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import moment from "moment";
 
 import("../styles/Item.css")
 
@@ -20,7 +21,6 @@ const Item = ({currentItem}) => {
             setItem({name:"Home"})
     }
     useEffect(() => {
-        console.log("useEffect of Item")
         if (item !== currentItem) {
             setItem(currentItem)
         }
@@ -28,7 +28,6 @@ const Item = ({currentItem}) => {
             setCurrentItem()
         }
     }, [currentItem])
-
 
     return <div className="SelectionItem">
         {item &&
@@ -43,10 +42,18 @@ const Item = ({currentItem}) => {
                     <label>Nom : </label>
                     <span>{item.name}</span>
                 </div>
+                {item.price &&
                 <div>
                     <label>Prix : </label>
-                    <span>{item.price}</span>
+                    <span>{item.price/100}€</span>
                 </div>
+                }
+                {item.acquisitionDate &&
+                <div>
+                    <label>Date d'acquisition : </label>
+                    <span>{moment(item.acquisitionDate).format('DD/MM/YYYY')}</span>
+                </div>
+                }
             </div>
         </>
         }
