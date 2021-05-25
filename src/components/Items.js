@@ -12,15 +12,22 @@ const Items = ({items, activeItem, location}) => {
         deselectItems()
         history.push((item.isLocation ? "/locations/" : "/items/") + item.id)
     }
-
+    useEffect(() => {
+            document.querySelectorAll(".item-select-checkbox").forEach((checkbox) => {
+                checkbox.style.display = selectedItems.length > 0 ? "block" : ""
+            })
+        }
+    ,
+        [selectedItems]
+    )
     useEffect(() => {
         updateItemColumn()
         window.addEventListener("resize", updateItemColumn)
         return () => window.removeEventListener("resize", updateItemColumn)
     }, [])
-    useEffect(()=>{
+    useEffect(() => {
         deselectItems()
-    },[location])
+    }, [location])
 
     useEffect(() => {
         updateItemColumn()
@@ -49,7 +56,7 @@ const Items = ({items, activeItem, location}) => {
         deselectItems()
         activeItem(event, location)
     }
-    const handleSelect = (event,item) => {
+    const handleSelect = (event, item) => {
         let itemContainerSelector = ""
         if (event.currentTarget.classList[0] === "item-select") {
             deselectItems()
@@ -96,13 +103,13 @@ const Items = ({items, activeItem, location}) => {
                     </div>
                     <div className="item-select" onClick={(event) => {
 
-                        handleSelect(event,item)
+                        handleSelect(event, item)
 
                     }}
                          onDoubleClick={() => {
                              redirect(item)
                          }}
-                        >
+                    >
                         <div className="item-icon">
                             {/*<img alt="item-icon" src={item.isLocation ? boxOpenSvg :fileSvg}/>*/}
                             <FontAwesomeIcon className="icon" icon={item.isLocation ? "box-open" : "file"}/>
