@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from "react";
 import ItemDataService from "../services/ItemService";
-import LocationDataService from "../services/LocationService";
 import {useParams} from "react-router-dom";
+import LocationTree from "./LocationTree";
+import "../styles/AddItem.css"
+import useModal from "./useModal";
+import Modal from "./Modal";
+import moment from "moment";
 
-const AddItem = ({onSuccess}) => {
+const AddItem = ({onSuccess, itemId}) => {
     const {id} = useParams();
     const initialItemState = {
         id: null,
@@ -13,27 +17,39 @@ const AddItem = ({onSuccess}) => {
         isLocation: false,
         locationId: id || ""
     };
+
     const [item, setItem] = useState(initialItemState);
     const [submitted, setSubmitted] = useState(false);
-    const [locations, setLocations] = useState([]);
-    useEffect(() => {
-        retrieveLocations();
-    }, []);
+    const [location, setLocation] = useState()
 
-    const retrieveLocations = () => {
-        LocationDataService.getAll()
-            .then(response => {
-                setLocations(response.data);
+    const [isShowingLocationTree, toggleLocationTree] = useModal();
+
+    useEffect(() => {
+        const retrieveItem = () => {
+            ItemDataService.get(itemId)
+                .then(res => setItem(res.data))
+                .catch(err=> console.log(err))
+        };
+        retrieveItem()
+    }, [itemId]);
+
+    useEffect(() => {
+        retrieveLocation(item.locationId);
+    }, [item.locationId]);
+
+
+    const retrieveLocation = (id) => {
+        ItemDataService.get(id)
+            .then((res) => {
+                setLocation(res.data)
             })
-            .catch(e => {
-                console.log(e);
-            });
-    };
+            .catch(err => console.log(err))
+    }
     const handleInputChange = event => {
         const {name, value,} = event.target;
         setItem({...item, [name]: value});
     };
-
+    console.log(item)
     const saveItem = () => {
         let data = {};
         for (const propName in item) {
@@ -41,9 +57,7 @@ const AddItem = ({onSuccess}) => {
                 data[propName] = item[propName];
             }
         }
-        // if(item.isLocation){
-        //     data["location"] = {name:item.name}
-        // }
+
         ItemDataService.create(data)
             .then(response => {
                 // setItem({
@@ -54,6 +68,7 @@ const AddItem = ({onSuccess}) => {
                 // });
                 setSubmitted(true);
                 onSuccess()
+
                 console.log(response.data);
             })
             .catch(e => {
@@ -61,11 +76,28 @@ const AddItem = ({onSuccess}) => {
             });
     };
 
+    const updateItem = () => {
+        let data = {}
+        for (const propName in item) {
+            if (item[propName] !== null && item[propName] !== '') {
+                data[propName] = item[propName];
+            }
+        }
+        ItemDataService.update(item.id, data)
+            .then(res => {
+                setSubmitted(true);
+                console.log(res.data)
+            })
+            .catch(err => console.log(err))
+    }
+
     const newItem = () => {
         setItem(initialItemState);
         setSubmitted(false);
     };
-
+    const handleLocationChange = (id) => {
+        setItem({...item, locationId: id})
+    }
     return (
         <div className="submit-form">
             {submitted ? (
@@ -110,7 +142,7 @@ const AddItem = ({onSuccess}) => {
                             className="form-control"
                             id="acquisitionDate"
                             required
-                            value={item.acquisitionDate}
+                            value={moment(item.acquisitionDate).format('YYYY-MM-DD')}
                             onChange={handleInputChange}
                             name="acquisitionDate"
                         />
@@ -136,23 +168,39 @@ const AddItem = ({onSuccess}) => {
                         />
                     </div>
 
+                    {/*<div className="form-group">*/}
+                    {/*    <label htmlFor="location">Emplacement</label>*/}
+                    {/*    <select*/}
+                    {/*        className="form-control"*/}
+                    {/*        id="location"*/}
+                    {/*        value={item.locationId}*/}
+                    {/*        onChange={handleInputChange}*/}
+                    {/*        name="locationId"*/}
+                    {/*    >*/}
+                    {/*        <option >Aucun</option>*/}
+                    {/*        {locations.map(({name,id})=>(*/}
+                    {/*            <option key={"location"+id} value={id}>{name}</option>*/}
+                    {/*        ))}*/}
+                    {/*    </select>*/}
+                    {/*</div>*/}
                     <div className="form-group">
                         <label htmlFor="location">Emplacement</label>
-                        <select
-                            className="form-control"
-                            id="location"
-                            value={item.locationId}
-                            onChange={handleInputChange}
-                            name="locationId"
-                        >
-                            <option >Aucun</option>
-                            {locations.map(({name,id})=>(
-                                <option key={"location"+id} value={id}>{name}</option>
-                            ))}
-                        </select>
+                        <input type="text" value={location ? location.name : ""} onClick={toggleLocationTree}/>
+                        <Modal isShowing={isShowingLocationTree} hide={toggleLocationTree}
+                               title="Sélectionnez un emplacement">
+                            <LocationTree onSelect={(id) => handleLocationChange(id)} itemLocation={item.locationId}
+                                          hide={toggleLocationTree}/>
+                        </Modal>
+                        {/*<div className="location-tree-container">*/}
+                        {/*    */}
+                        {/*</div>*/}
                     </div>
-                    <button onClick={saveItem} className="btn btn-success">
-                        Submit
+                    <button onClick={itemId ? updateItem : saveItem} className="btn btn-success">
+                        {itemId?
+                            "Modifier"
+                            :
+                            "Ajouter"
+                        }
                     </button>
                 </div>
             )}
