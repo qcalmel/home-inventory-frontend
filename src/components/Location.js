@@ -10,34 +10,26 @@ import Item from "./Item";
 import ItemDataService from "../services/ItemService";
 import "../styles/Location.css"
 import PathNavigation from "./PathNavigation";
+import SearchBar from "./SearchBar";
+import LocationContent from "./LocationContent";
 
 
 const Location = () => {
-    const defaultLocation = {name:"Home"}
+    const defaultLocation = {name: "Home"}
     const [location, setLocation] = useState(defaultLocation);
-    const [items, setItems] = useState([])
     const [path, setPath] = useState([])
-    const [currentItem, setCurrentItem] = useState(null);
     const {id} = useParams();
 
-    const [isShowingAddItem, toggleAddItem] = useModal();
+
 
     useEffect(() => {
         refreshData()
     }, [id])
     const refreshData = () => {
         retrieveLocation()
-        retrieveItems()
+        // retrieveItems()
     }
-    const setActiveItem = (event, item) => {
-        setCurrentItem(item);
-        if (item.id && item.id != id) {
-            const checked = event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked
-            event.currentTarget.parentNode.getElementsByClassName('item-select-checkbox')[0].checked = !checked
-        }
 
-
-    };
     const parentsLinks = async (parentId) => {
         let parents = []
         let count = 0
@@ -59,7 +51,7 @@ const Location = () => {
             ItemDataService.get(id)
                 .then(res => {
                     setLocation(res.data)
-                    setCurrentItem(res.data)
+                    // setCurrentItem(res.data)
                     setPath([])
                     parentsLinks(res.data.locationId)
                         .then(res => setPath(res))
@@ -68,47 +60,19 @@ const Location = () => {
                 .catch(e => console.log(e))
             :
             setLocation(defaultLocation)
-        setCurrentItem(defaultLocation)
+        // setCurrentItem(defaultLocation)
         setPath([])
         ;
     }
 
-    const retrieveItems = () => {
-        id ?
-            LocationDataService.getAllItems(id)
-                .then(res => {
-                    setItems(res.data)
-                })
-                .catch(e => console.log(e))
-            :
-            LocationDataService.getRootLocations()
-                .then(res => {
-                    setItems(res.data)
-                })
-                .catch(e => console.log(e))
-        ;
-    }
-    return <div>
-        <PathNavigation currentLocation={location} parentLocations={path}/>
+
+    return (
         <div>
-            <button className="modal-toggle" onClick={toggleAddItem}>
-                Ajouter Objet
-            </button>
-
-            <Modal isShowing={isShowingAddItem} hide={toggleAddItem} title="Ajouter un nouvel objet">
-                <AddItem onSuccess={() => retrieveItems()}/>
-            </Modal>
-
+            <PathNavigation currentLocation={location} parentLocations={path}/>
+            <SearchBar/>
+            <LocationContent location={location}/>
         </div>
-        <div className="grid-container">
-            <div className="content">
-                <Items items={items} activeItem={setActiveItem} location={location}/>
-            </div>
-            <div className="sidebar">
-                <Item currentItem={currentItem}/>
-            </div>
-        </div>
-    </div>
+    )
 }
 
 export default Location
