@@ -23,10 +23,10 @@ const Menu = () => {
             </label>
             <div className="overlay"></div>
             <ul className="nav">
+                <li><span>Home Inventory</span></li>
                 <li><NavLink activeClassName="active" to={"/home"}>Emplacements</NavLink></li>
                 <li><NavLink exact activeClassName="active" to={"/items"}>Objets</NavLink></li>
-                <li><NavLink exact activeClassName="active" to={"/add/item"}>Ajouter Objet</NavLink></li>
-                <li><NavLink exact activeClassName="active" to={"/add/location"}>Ajouter Emplacement</NavLink></li>
+                <li><NavLink exact activeClassName="active" to={""}>Corbeille</NavLink></li>
             </ul>
         </div>
     )

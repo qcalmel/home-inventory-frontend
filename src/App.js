@@ -17,7 +17,7 @@ function App() {
     return (
         <div className="app-container">
             <Menu/>
-            <div>
+            <div className="page">
                 <Switch>
                     <Route exact path={"/locations"} component={LocationsList}/>
                     <Route exact path={["/", "/home"]} component={Location}/>
